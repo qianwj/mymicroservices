@@ -1,11 +1,12 @@
 package main
 
 import (
-	"mydata/handler"
-	pb "mydata/proto"
-
+	"github.com/go-micro/plugins/v4/server/grpc"
 	"go-micro.dev/v4"
 	"go-micro.dev/v4/logger"
+	"go-micro.dev/v4/server"
+	"mydata/handler"
+	pb "mydata/proto"
 )
 
 var (
@@ -14,17 +15,22 @@ var (
 )
 
 func main() {
+	rpcServer := grpc.NewServer(
+		server.Address(":9002"),
+	)
+
+	// Register handler
+	if err := pb.RegisterMydataHandler(rpcServer, &handler.Mydata{}); err != nil {
+		logger.Fatal(err)
+	}
+
 	// Create service
-	srv := micro.NewService()
+	srv := micro.NewService(micro.Server(rpcServer))
 	srv.Init(
 		micro.Name(service),
 		micro.Version(version),
 	)
 
-	// Register handler
-	if err := pb.RegisterMydataHandler(srv.Server(), new(handler.Mydata)); err != nil {
-		logger.Fatal(err)
-	}
 	// Run service
 	if err := srv.Run(); err != nil {
 		logger.Fatal(err)

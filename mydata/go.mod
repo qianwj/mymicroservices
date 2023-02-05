@@ -2,7 +2,15 @@ module mydata
 
 go 1.18
 
-require go-micro.dev/v4 v4.9.0
+require (
+	github.com/go-micro/plugins/v4/server/grpc v1.2.0
+	go-micro.dev/v4 v4.9.0
+)
+
+require (
+	google.golang.org/genproto v0.0.0-20211021150943-2b146023228c // indirect
+	google.golang.org/grpc v1.42.0 // indirect
+)
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
